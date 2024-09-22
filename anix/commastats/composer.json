@@ -3,7 +3,7 @@
     "type": "phpbb-extension",
     "description": "Add commas to forum statistics, user statistics, views, clicks",
     "homepage": "https://phpbb.ro",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "time": "2024-09-21",
     "license": "GPL-2.0-only",
     "authors": [
