@@ -35,7 +35,8 @@ if (empty($lang) || !is_array($lang))
 //
 
 $lang = array_merge($lang, [
-
-	'COMMASTATS_EVENT'		=> ' :: Commastats Event :: ',
-
+	//Index statistics
+	'TOTAL_POSTS_COUNT'		=> 'Total posts <strong>%s</strong>',
+	'TOTAL_TOPICS'			=> 'Total topics <strong>%s</strong>',
+	'TOTAL_USERS'			=> 'Total members <strong>%s</strong>',
 ]);
