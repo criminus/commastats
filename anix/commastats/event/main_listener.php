@@ -63,7 +63,7 @@ class main_listener implements EventSubscriberInterface
 		\phpbb\template\template $template,
 		\phpbb\config\config $config,
 		\phpbb\content_visibility $phpbb_content_visibility,
-		\phpbb\pagination $pagination,
+		\phpbb\pagination $pagination
 	)
 	{
 		$this->language = $language;
