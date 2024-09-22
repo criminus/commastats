@@ -6,5 +6,6 @@ services:
             - '@template'
             - '@config'
             - '@content.visibility'
+            - '@pagination'
         tags:
             - { name: event.listener }

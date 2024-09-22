@@ -27,6 +27,7 @@ class main_listener implements EventSubscriberInterface
 			'core.index_modify_page_title'				=> 'index_modify_page_title',
 			'core.display_forums_modify_template_vars'	=> 'display_forums_modify_template_vars',
 			'core.viewforum_modify_topicrow'			=> 'viewforum_modify_topicrow',
+			'core.viewforum_topic_row_after'			=> 'viewforum_topic_row_after',
 			'core.viewtopic_cache_user_data'			=> 'viewtopic_cache_user_data',
 			'core.search_modify_tpl_ary'				=> 'search_modify_tpl_ary',
 			'core.memberlist_prepare_profile_data'		=> 'memberlist_prepare_profile_data'
@@ -45,6 +46,9 @@ class main_listener implements EventSubscriberInterface
 	/** @var \phpbb\content_visibility */
 	protected $phpbb_content_visibility;
 
+	/** @var \phpbb\pagination */
+	protected $pagination;
+
 	/**
 	 * Constructor
 	 *
@@ -58,13 +62,15 @@ class main_listener implements EventSubscriberInterface
 		\phpbb\language\language $language, 
 		\phpbb\template\template $template,
 		\phpbb\config\config $config,
-		\phpbb\content_visibility $phpbb_content_visibility
+		\phpbb\content_visibility $phpbb_content_visibility,
+		\phpbb\pagination $pagination,
 	)
 	{
 		$this->language = $language;
 		$this->template = $template;
 		$this->config = $config;
 		$this->phpbb_content_visibility = $phpbb_content_visibility;
+		$this->pagination = $pagination;
 	}
 
 	/**
@@ -86,11 +92,11 @@ class main_listener implements EventSubscriberInterface
 	public function index_modify_page_title()
 	{
 		//Rewrite default templates.
-		$this->template->assign_vars([
-			'TOTAL_POSTS'		=> $this->language->lang('TOTAL_POSTS_COUNT', number_format($this->config['num_posts'])),
+        $this->template->assign_vars([
+            'TOTAL_POSTS' 		=> $this->language->lang('TOTAL_POSTS_COUNT', number_format($this->config['num_posts'])),
 			'TOTAL_TOPICS' 		=> $this->language->lang('TOTAL_TOPICS', number_format($this->config['num_topics'])),
 			'TOTAL_USERS' 		=> $this->language->lang('TOTAL_USERS', number_format($this->config['num_users'])),
-		]);
+        ]);
 	}
 
 	//Forumlist
@@ -103,9 +109,9 @@ class main_listener implements EventSubscriberInterface
 		$post_click_count = ($row['forum_type'] != FORUM_LINK || $row['forum_flags'] & FORUM_FLAG_LINK_TRACK) ? number_format($row['forum_posts']) : '';
 
 		//Rewrite default templates.
-		$forum_row['TOPICS']				= number_format($row['forum_topics']);
-		$forum_row['POSTS']					= number_format($row['forum_posts']);
-		$forum_row[$l_post_click_count]		= $post_click_count;
+		$forum_row['TOPICS'] 				= number_format($row['forum_topics']);
+		$forum_row['POSTS'] 				= number_format($row['forum_posts']);
+		$forum_row[$l_post_click_count] 	= $post_click_count;
 
 		//Re-assign modified forum row to the event
 		$event['forum_row'] = $forum_row;
@@ -118,16 +124,30 @@ class main_listener implements EventSubscriberInterface
 		$topic_row = $event['topic_row'];
 
 		$replies = $this->phpbb_content_visibility->get_count('topic_posts', $row, $row['forum_id']) - 1;
-		
+
 		// Correction for case of unapproved topic visible to poster
 		if ($replies < 0)
 		{
 			$replies = 0;
 		}
 
-		//Rewrite default templates.
 		$topic_row['VIEWS'] 	= number_format($row['topic_views']);
 		$topic_row['REPLIES'] 	= number_format($replies);
+		
+
+		$event['topic_row'] = $topic_row;
+	}
+
+	public function viewforum_topic_row_after($event)
+	{
+		$row = $event['row'];
+		$topic_row = $event['topic_row'];
+
+		$replies = $this->phpbb_content_visibility->get_count('topic_posts', $row, $row['forum_id']) - 1;
+
+		if ($replies > 1000) {
+			$this->pagination->generate_template_pagination($topic_row['U_VIEW_TOPIC'], 'topicrow.pagination', 'start', (int) $replies + 1, $this->config['posts_per_page'], 1, true, true);
+		}
 
 		//Re-assign modified topic row to the event
 		$event['topic_row'] = $topic_row;
@@ -166,12 +186,12 @@ class main_listener implements EventSubscriberInterface
 	public function memberlist_prepare_profile_data($event)
 	{
 		//load template array data
-		$template_data = $event['template_data'];
+        $template_data = $event['template_data'];
 		$data = $event['data'];
 
 		$template_data['POSTS'] = (number_format($data['user_posts'])) ? number_format($data['user_posts']) : 0;
 
-		//reassign the modified template data back to the event
-		 $event['template_data'] = $template_data;
+        //reassign the modified template data back to the event
+        $event['template_data'] = $template_data;
 	}
 }
