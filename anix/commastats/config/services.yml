@@ -1,0 +1,10 @@
+services:
+    anix.commastats.listener:
+        class: anix\commastats\event\main_listener
+        arguments:
+            - '@language'
+            - '@template'
+            - '@config'
+            - '@content.visibility'
+        tags:
+            - { name: event.listener }
