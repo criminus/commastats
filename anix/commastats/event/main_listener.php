@@ -87,7 +87,7 @@ class main_listener implements EventSubscriberInterface
 	{
 		//Rewrite default templates.
         $this->template->assign_vars([
-            'TOTAL_POSTS' 		=> $this->language->lang('TOTAL_POSTS_COUNT', number_format($this->config['num_posts'])),
+			'TOTAL_POSTS'		=> $this->language->lang('TOTAL_POSTS_COUNT', number_format($this->config['num_posts'])),
 			'TOTAL_TOPICS' 		=> $this->language->lang('TOTAL_TOPICS', number_format($this->config['num_topics'])),
 			'TOTAL_USERS' 		=> $this->language->lang('TOTAL_USERS', number_format($this->config['num_users'])),
         ]);
@@ -103,9 +103,9 @@ class main_listener implements EventSubscriberInterface
 		$post_click_count = ($row['forum_type'] != FORUM_LINK || $row['forum_flags'] & FORUM_FLAG_LINK_TRACK) ? number_format($row['forum_posts']) : '';
 
 		//Rewrite default templates.
-		$forum_row['TOPICS'] 				= number_format($row['forum_topics']);
-		$forum_row['POSTS'] 				= number_format($row['forum_posts']);
-		$forum_row[$l_post_click_count] 	= $post_click_count;
+		$forum_row['TOPICS']				= number_format($row['forum_topics']);
+		$forum_row['POSTS']					= number_format($row['forum_posts']);
+		$forum_row[$l_post_click_count]		= $post_click_count;
 
 		//Re-assign modified forum row to the event
 		$event['forum_row'] = $forum_row;
@@ -166,7 +166,7 @@ class main_listener implements EventSubscriberInterface
 	public function memberlist_prepare_profile_data($event)
 	{
 		//load template array data
-        $template_data = $event['template_data'];
+		$template_data = $event['template_data'];
 		$data = $event['data'];
 
 		$template_data['POSTS'] = (number_format($data['user_posts'])) ? number_format($data['user_posts']) : 0;
