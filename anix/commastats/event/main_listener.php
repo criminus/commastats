@@ -58,7 +58,7 @@ class main_listener implements EventSubscriberInterface
 		\phpbb\language\language $language, 
 		\phpbb\template\template $template,
 		\phpbb\config\config $config,
-		\phpbb\content_visibility $phpbb_content_visibility,
+		\phpbb\content_visibility $phpbb_content_visibility
 	)
 	{
 		$this->language = $language;
