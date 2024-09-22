@@ -86,11 +86,11 @@ class main_listener implements EventSubscriberInterface
 	public function index_modify_page_title()
 	{
 		//Rewrite default templates.
-        $this->template->assign_vars([
+		$this->template->assign_vars([
 			'TOTAL_POSTS'		=> $this->language->lang('TOTAL_POSTS_COUNT', number_format($this->config['num_posts'])),
 			'TOTAL_TOPICS' 		=> $this->language->lang('TOTAL_TOPICS', number_format($this->config['num_topics'])),
 			'TOTAL_USERS' 		=> $this->language->lang('TOTAL_USERS', number_format($this->config['num_users'])),
-        ]);
+		]);
 	}
 
 	//Forumlist
@@ -171,7 +171,7 @@ class main_listener implements EventSubscriberInterface
 
 		$template_data['POSTS'] = (number_format($data['user_posts'])) ? number_format($data['user_posts']) : 0;
 
-        //reassign the modified template data back to the event
-        $event['template_data'] = $template_data;
+		//reassign the modified template data back to the event
+		 $event['template_data'] = $template_data;
 	}
 }
